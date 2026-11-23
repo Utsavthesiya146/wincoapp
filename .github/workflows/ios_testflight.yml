@@ -73,7 +73,7 @@ jobs:
           fi
 
           if [ -f "$PP_PATH" ]; then
-            UUID="4a5c8987-5dd2-4a9f-9eea-0834973c7c8c"
+            UUID="47256f58-2188-4885-88f0-e56d8edb7906"
             PARSED_UUID=$(grep -a -A1 "UUID" "$PP_PATH" | grep -oE '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | head -n 1 || echo "")
             if [ -n "$PARSED_UUID" ]; then
               UUID="$PARSED_UUID"
