@@ -99,18 +99,18 @@ jobs:
             security unlock-keychain -p "$KEYCHAIN_PWD" $KEYCHAIN_PATH
 
             security import $CERTIFICATE_PATH -P "$P12_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-            security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PWD" $KEYCHAIN_PATH || true
+            security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PWD" $KEYCHAIN_PATH || true
             security default-keychain -s $KEYCHAIN_PATH
             security list-keychain -d user -s $KEYCHAIN_PATH $(security list-keychains -d user | tr -d '"')
 
             echo "has_signing=true" >> $GITHUB_OUTPUT
           else
-            echo "No Apple distribution certificate provided in GitHub Secrets. Building archive with embedded provisioning profile."
+            echo "No Apple distribution certificate provided in GitHub Secrets."
             echo "has_signing=false" >> $GITHUB_OUTPUT
           fi
 
       # ----------------------------------------------------
-      # Build iOS Release
+      # Build iOS Release & Export Signed IPA
       # ----------------------------------------------------
       - name: Build iOS App Store Package (IPA)
         run: |
@@ -123,7 +123,13 @@ jobs:
             -configuration Release \
             -archivePath $RUNNER_TEMP/Runner.xcarchive \
             archive \
+            DEVELOPMENT_TEAM=VX698YBG86 \
             CODE_SIGNING_ALLOWED=NO
+
+          echo "Unlocking keychain for signing..."
+          if [ -f "$RUNNER_TEMP/app-signing.keychain-db" ]; then
+            security unlock-keychain -p "temporary_keychain_password_123" $RUNNER_TEMP/app-signing.keychain-db || true
+          fi
 
           echo "Exporting signed App Store IPA with xcodebuild..."
           mkdir -p build/ios/ipa
@@ -131,22 +137,19 @@ jobs:
             -archivePath $RUNNER_TEMP/Runner.xcarchive \
             -exportPath build/ios/ipa \
             -exportOptionsPlist ios/ExportOptions.plist \
-            -allowProvisioningUpdates || {
-              echo "Export failed with exportOptionsPlist, creating release IPA package..."
-              cd build/ios/iphoneos
-              mkdir -p Payload
-              cp -r Runner.app Payload/
-              if [ -f "$RUNNER_TEMP/build_pp.mobileprovision" ]; then
-                cp "$RUNNER_TEMP/build_pp.mobileprovision" Payload/Runner.app/embedded.mobileprovision
-              elif [ -f "../../../ios/Winco_Connect.mobileprovision" ]; then
-                cp "../../../ios/Winco_Connect.mobileprovision" Payload/Runner.app/embedded.mobileprovision
-              fi
-              zip -r ../ipa/WincoConnect.ipa Payload
-              cd ../../..
-            }
+            -allowProvisioningUpdates
 
           echo "Listing generated IPA files:"
           ls -la build/ios/ipa/
+
+          # Verify signature of exported IPA
+          IPA_FILE=$(find build/ios/ipa -name "*.ipa" | head -n 1)
+          if [ -n "$IPA_FILE" ]; then
+            echo "Verifying code signature of $IPA_FILE..."
+            mkdir -p $RUNNER_TEMP/verify_payload
+            unzip -q "$IPA_FILE" -d $RUNNER_TEMP/verify_payload
+            codesign -dvvv $RUNNER_TEMP/verify_payload/Payload/Runner.app 2>&1 | head -n 25 || true
+          fi
 
       # ----------------------------------------------------
       # Upload Artifact to GitHub (Downloadable IPA)
@@ -173,22 +176,25 @@ jobs:
             
             # Find IPA file
             IPA_FILE=$(find build/ios/ipa -name "*.ipa" | head -n 1)
-            echo "IPA file: $IPA_FILE"
+            echo "Target IPA file: $IPA_FILE"
 
             # Create private key directory for xcrun altool
-            mkdir -p ~/.appstoreconnect/private_keys
-            echo "$APP_STORE_CONNECT_PRIVATE_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
+            mkdir -p ~/.appstoreconnect/private_keys ~/.private_keys ./private_keys
+            echo "$APP_STORE_CONNECT_PRIVATE_KEY" | tr -d '\r' > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
+            cp ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8 ~/.private_keys/
+            cp ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8 ./private_keys/
+            chmod 600 ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8 ~/.private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8 ./private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
 
             # Upload using xcrun altool
             xcrun altool --upload-app \
               --type ios \
               --file "$IPA_FILE" \
               --apiKey "$APP_STORE_CONNECT_KEY_ID" \
-              --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+              --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+              --show-progress
             
             echo "Successfully uploaded to Apple TestFlight!"
           else
-            echo "App Store Connect API Secrets not configured yet. IPA has been archived as a GitHub release artifact."
-            echo "Please set APP_STORE_CONNECT_KEY_ID, APP_STORE_CONNECT_ISSUER_ID, and APP_STORE_CONNECT_PRIVATE_KEY in GitHub Secrets to enable automatic TestFlight upload."
+            echo "Error: App Store Connect API Secrets not configured."
+            exit 1
           fi
-

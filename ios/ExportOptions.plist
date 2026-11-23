@@ -6,6 +6,8 @@
     <string>export</string>
     <key>method</key>
     <string>app-store</string>
+    <key>teamID</key>
+    <string>VX698YBG86</string>
     <key>signingStyle</key>
     <string>manual</string>
     <key>signingCertificate</key>
@@ -21,4 +23,3 @@
     <true/>
 </dict>
 </plist>
-
