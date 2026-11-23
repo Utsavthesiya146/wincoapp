@@ -1,0 +1,2129 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://wincoconnect.com/images/logo5.png">
+    <link href="https://wincoconnect.com/assets2/libs/jsvectormap/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://wincoconnect.com/assets2/js/layout.js"></script>
+    <link href="https://wincoconnect.com/assets2/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <link href="https://wincoconnect.com/assets2/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://wincoconnect.com/assets2/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .profile-banner {
+            background: linear-gradient(135deg, #d81f26, #b5161c);
+            padding: 20px 25px;
+            /* ↓ reduced from 40px */
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
+        }
+
+        /* PROFILE IMAGE */
+        .profile-img-wrapper {
+            position: relative;
+        }
+
+        .profile-img {
+            width: 95px;
+            /* ↓ reduced */
+            height: 95px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid #fff;
+        }
+
+        /* CAMERA ICON */
+        .camera-icon {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            background: #fff;
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d81f26;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+        }
+
+        /* USER TEXT AREA */
+        .profile-banner h2 {
+            font-size: 20px;
+            margin-bottom: 4px !important;
+        }
+
+        .profile-banner .mb-2 {
+            margin-bottom: 6px !important;
+            font-size: 14px;
+        }
+
+        /* BADGES */
+        .badge-pill,
+        .badge-pill-dark {
+            padding: 4px 12px;
+            font-size: 12px;
+            border-radius: 20px;
+        }
+
+        /* SAVE BUTTON */
+        .save-btn {
+            background: #fff;
+            color: #d81f26;
+            padding: 8px 18px;
+            /* ↓ reduced */
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* STATS BOX */
+        .stats-box {
+            background: #fff;
+            border-radius: 0 0 16px 16px;
+            padding: 15px;
+            /* ↓ reduced */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
+            margin-top: -6px;
+        }
+
+        .stats-box h6 {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .stats-box h2 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+
+
+        /* ===== Cards ===== */
+        .profile-card {
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .05);
+        }
+
+        /* ===== Card Header ===== */
+        .profile-header {
+            background: #fff;
+            border-bottom: 1px solid #f1f1f1;
+            padding: 14px 20px;
+            font-weight: 600;
+            color: #e11d48;
+        }
+
+        /* ===== Inputs ===== */
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            height: 44px;
+            font-size: 14px;
+            border: 1px solid #e5e7eb;
+        }
+
+        textarea.form-control {
+            height: auto;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #e11d48;
+            box-shadow: 0 0 0 .15rem rgba(225, 29, 72, .15);
+        }
+
+        /* ===== Labels ===== */
+        .form-label {
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        /* ===== Sidebar ===== */
+        .profile-sidebar {
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .05);
+        }
+
+        /* ===== Sidebar Tabs ===== */
+        .profile-sidebar .nav-link {
+            border-radius: 10px;
+            color: #444;
+            font-size: 14px;
+            padding: 12px 14px;
+            transition: .2s;
+        }
+
+        .profile-sidebar .nav-link:hover {
+            background: #fff1f2;
+            color: #e11d48;
+        }
+
+        .profile-sidebar .nav-link.active {
+            background: #e11d48;
+            color: #fff;
+        }
+
+        /* ===== Section spacing ===== */
+        .profile-section .row>div {
+            margin-bottom: 10px;
+        }
+
+        /* ===== Badge ===== */
+        .badge {
+            font-size: 12px;
+        }
+
+        /* Sticky sidebar */
+        .sticky-card {
+            position: sticky;
+            top: 20px;
+        }
+
+        /* reduce card spacing */
+        .card {
+            margin-bottom: 14px !important;
+        }
+
+        /* reduce card body padding */
+        .card-body {
+            padding: 18px !important;
+        }
+
+        /* compact header */
+        .card-header {
+            padding: 10px 18px !important;
+        }
+
+        /* reduce row spacing */
+        .row {
+            --bs-gutter-y: .4rem;
+        }
+
+        /* form label smaller */
+        .form-label {
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        /* compact inputs */
+        .form-control,
+        .form-select {
+            height: 38px;
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+
+        textarea.form-control {
+            min-height: 70px;
+        }
+
+        /* sidebar buttons compact */
+        .nav-pills .nav-link {
+            padding: 9px 12px !important;
+            font-size: 14px;
+        }
+
+        /* remove extra tab gap */
+        .tab-pane {
+            margin-top: 0;
+        }
+
+        /* smaller section title */
+        .card-header h5 {
+            font-size: 16px;
+        }
+
+        /* reduce column spacing */
+        .mb-3 {
+            margin-bottom: .6rem !important;
+        }
+
+        /* reduce large spacing */
+        .p-4 {
+            padding: 1rem !important;
+        }
+
+        /* sidebar card padding */
+        .card-body.p-2 {
+            padding: .6rem !important;
+        }
+
+        /* banner spacing */
+        .profile-banner {
+            padding: 18px 22px;
+        }
+
+        /* profile image */
+        .profile-img {
+            width: 85px;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #fff;
+        }
+
+        /* camera icon position */
+        .camera-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #ed2d7b;
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* save button alignment */
+        .save-btn {
+            white-space: nowrap;
+            padding: 8px 16px;
+        }
+
+        /* stats box */
+        .stats-box {
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+            margin-top: -6px;
+        }
+
+        /* stat items */
+        .stat-item {
+            padding: 14px 10px;
+        }
+
+        .stat-item h6 {
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 3px;
+        }
+
+        .stat-item h3 {
+            font-weight: 700;
+        }
+
+        /* mobile fix */
+        @media(max-width:768px) {
+
+            .profile-banner .d-flex {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 12px;
+            }
+
+            .save-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body data-sidebar="colored">
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+         <header id="page-topbar">
+     <div class="navbar-header">
+         <div class="d-flex">
+             <!-- LOGO -->
+             <div class="navbar-brand-box">
+                 <a href="https://wincoconnect.com/" class="logo logo-dark">
+                     <span class="logo-sm">
+                         <img src="https://wincoconnect.com/images/logo5.png" alt="logo-sm-dark" height="24">
+                     </span>
+                     <span class="logo-lg">
+                         <img src="https://wincoconnect.com/images/logo5.png" alt="logo-dark" height="25">
+                     </span>
+                 </a>
+
+                 <a href="https://wincoconnect.com/" class="logo logo-light">
+                     <span class="logo-sm">
+                         <img src="https://wincoconnect.com/images/logo5.png" alt="logo-sm-light" height="60">
+                     </span>
+                     <span class="logo-lg">
+                         <img src="https://wincoconnect.com/images/logo5.png" alt="logo-light" height="60">
+                     </span>
+                 </a>
+             </div>
+
+             <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect vertical-menu-btn" id="vertical-menu-btn">
+                 <i class="ri-menu-2-line align-middle"></i>
+             </button>
+
+             <!-- start page title -->
+             <div class="page-title-box align-self-center d-none d-md-block">
+                 <h4 class="page-title mb-0"></h4>
+             </div>
+             <!-- end page title -->
+         </div>
+
+         <div class="d-flex">
+
+             <!-- App Search-->
+             <form action="https://wincoconnect.com/member/search" method="post" class="app-search d-none d-lg-block">
+                 <div class="position-relative">
+                     <input type="text"    name="search" class="form-control" placeholder="Search...">
+                     <span  type="submit" class="ri-search-line"></span>
+                 </div>
+             </form>
+
+             <div class="dropdown d-inline-block d-lg-none ms-2">
+                 <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown"
+                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     <i class="ri-search-line"></i>
+                 </button>
+                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+                     aria-labelledby="page-header-search-dropdown">
+
+                     <form action="https://wincoconnect.com/member/search" method="post">
+
+                         <div class="input-group">
+                             <input
+                                 type="text"
+                                 name="search"
+                                 class="form-control"
+                                 placeholder="Search...">
+
+                             <button type="submit" class="btn btn-primary">
+                                 <i class="ri-search-line"></i> Search
+                             </button>
+                         </div>
+                     </form>
+                 </div>
+             </div>
+
+
+
+             <div class="dropdown d-none d-lg-inline-block ms-1">
+                 <button type="button" class="btn header-item noti-icon waves-effect"
+                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     <i class="ri-apps-2-line"></i>
+                 </button>
+                 <!-- <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                     <div class="px-lg-2">
+                         <div class="row g-0">
+                             <div class="col">
+                                 <a class="dropdown-icon-item" href="#">
+                                     <img src="https://wincoconnect.com/assets2/images/brands/github.png" alt="Github">
+                                     <span>GitHub</span>
+                                 </a>
+                             </div>
+                             <div class="col">
+                                 <a class="dropdown-icon-item" href="#">
+                                     <img src="https://wincoconnect.com/assets2/images/brands/bitbucket.png" alt="bitbucket">
+                                     <span>Bitbucket</span>
+                                 </a>
+                             </div>
+                             <div class="col">
+                                 <a class="dropdown-icon-item" href="#">
+                                     <img src="https://wincoconnect.com/assets2/images/brands/dribbble.png" alt="dribbble">
+                                     <span>Dribbble</span>
+                                 </a>
+                             </div>
+                         </div>
+
+                         <div class="row g-0">
+                             <div class="col">
+                                 <a class="dropdown-icon-item" href="#">
+                                     <img src="https://wincoconnect.com/assets2/images/brands/dropbox.png" alt="dropbox">
+                                     <span>Dropbox</span>
+                                 </a>
+                             </div>
+                             <div class="col">
+                                 <a class="dropdown-icon-item" href="#">
+                                     <img src="https://wincoconnect.com/assets2/images/brands/mail_chimp.png" alt="mail_chimp">
+                                     <span>Mail Chimp</span>
+                                 </a>
+                             </div>
+                             <div class="col">
+                                 <a class="dropdown-icon-item" href="#">
+                                     <img src="https://wincoconnect.com/assets2/images/brands/slack.png" alt="slack">
+                                     <span>Slack</span>
+                                 </a>
+                             </div>
+                         </div>
+                     </div>
+                 </div> -->
+             </div>
+
+             <div class="dropdown d-none d-lg-inline-block ms-1">
+                 <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
+                     <i class="ri-fullscreen-line"></i>
+                 </button>
+             </div>
+
+             <div class=" d-inline-block">
+                 <button type="button" class="btn header-item noti-icon waves-effect"
+                     data-bs-toggle="dropdown" aria-expanded="false">
+                     <i class="ri-settings-2-line"></i>
+                 </button>
+                 <div class="dropdown-menu dropdown-menu-end p-0 border-0 shadow-lg rounded-4 overflow-hidden"
+                     style="min-width:280px;">
+
+                     <!-- Header -->
+                     <div class="p-3 text-center text-white"
+                         style="background:linear-gradient(135deg,#194c8d,#194c8d);">
+
+                         <a href="https://wincoconnect.com/member/profile">
+                             <img src="https://wincoconnect.com/uploads/profile/1776448893_87ba65669f2cb1799190.jpeg"
+                                 class="rounded-circle border border-3 border-white shadow"
+                                 alt="Profile Image"
+                                 width="75" height="75"
+                                 style="object-fit:cover; object-position:top center;">
+                         </a>
+
+                         <h6 class="mt-2 mb-0 fw-semibold" style="color:#ffffff;">
+                             Harri Kumar                         </h6>
+                         <small class="opacity-75">Welcome Back</small>
+                     </div>
+
+                     <!-- Body -->
+                     <div class="p-2">
+                         <!-- Profile -->
+                         <a href="https://wincoconnect.com/member/profile/details/USR00001"
+                             class="dropdown-item d-flex align-items-center rounded-3 py-2">
+                             <i class="ri-user-line fs-5 text-primary me-2"></i>
+                             <span>My Profile</span>
+                         </a>
+                         <!-- Settings -->
+                         <a href="https://wincoconnect.com/member/profile"
+                             class="dropdown-item d-flex align-items-center rounded-3 py-2">
+                             <i class="ri-settings-3-line fs-5 text-warning me-2"></i>
+                             <span>Account Settings</span>
+                         </a>
+
+                         <hr class="my-2">
+
+                         <!-- Logout -->
+                         <a href="https://wincoconnect.com/member/logout"
+                             class="dropdown-item d-flex align-items-center rounded-3 py-2 text-danger">
+                             <i class="ri-logout-circle-r-line fs-5 me-2"></i>
+                             <span>Logout</span>
+                         </a>
+
+                     </div>
+                 </div>
+             </div>
+             <!-- 
+             <div class="dropdown d-inline-block">
+                 <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
+                     <i class="ri-settings-2-line"></i>
+                 </button>
+             </div> -->
+
+         </div>
+     </div>
+ </header>
+ <div class="watermark"></div>
+ <style>
+     .watermark {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+
+         background: url("https://wincoconnect.com/images/logo5.png") no-repeat center;
+         background-size: 300px;
+
+         opacity: 0.05;
+
+         z-index: 9999;
+         /* 🔥 bring in front of everything */
+         pointer-events: none;
+         /* 🔥 allows clicking cards */
+     }
+
+     .page-content {
+         position: relative;
+         z-index: 1;
+     }
+
+     .watermark {
+         z-index: 2147483647;
+     }
+ </style>         <div class="vertical-menu">
+     <!-- LOGO -->
+     <div class="navbar-brand-box">
+         <a href="https://wincoconnect.com/" class="logo logo-dark">
+             <span class="logo-sm">
+                 <img src="https://wincoconnect.com/images/logo6.png" alt="logo-sm-dark" width="170" style="border-radius:5px;">
+             </span>
+             <span class="logo-lg">
+                 <img src="https://wincoconnect.com/images/logo6.png" alt="logo-dark" width="170" style="border-radius:5px;">
+             </span>
+         </a>
+         <a href="https://wincoconnect.com/" class="logo logo-light">
+             <span class="logo-sm">
+                 <img src="https://wincoconnect.com/images/logo6.png" alt="logo-sm-light" width="170" style="border-radius:5px;">
+             </span>
+             <span class="logo-lg">
+                 <img src="https://wincoconnect.com/images/logo6.png" alt="logo-light" width="170" style="border-radius:5px;">
+             </span>
+         </a>
+     </div>
+     <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect vertical-menu-btn" id="vertical-menu-btn">
+         <i class="ri-menu-2-line align-middle"></i>
+     </button>
+     <div data-simplebar class="vertical-scroll">
+         <!--- Sidemenu -->
+         <div id="sidebar-menu">
+             <div class="dropdown mx-3 sidebar-user user-dropdown select-dropdown">
+                 <button type="button" class="btn btn-light w-100 waves-effect waves-light border-0" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     <span class="d-flex align-items-center">
+                         <div class="flex-shrink-0">
+                             <div class="avatar-xs rounded-circle flex-shrink-0">
+                                 <div class="avatar-title border bg-light text-primary rounded-circle text-uppercase user-sort-name">
+                                     H                                 </div>
+                             </div>
+                         </div>
+                         <div class="flex-grow-1 ms-2 text-start">
+                             <h6 class="mb-1 fw-medium user-name-text"> Harri Kumar </h6>
+                             <p class="font-size-13 text-muted user-name-sub-text mb-0"> member </p>
+                         </div>
+                         <!-- <div class="flex-shrink-0 text-end">
+                             <i class="mdi mdi-chevron-down font-size-16"></i>
+                         </div> -->
+                     </span>
+                 </button>
+                 <!-- <div class="dropdown-menu dropdown-menu-end w-100">
+                     <a class="dropdown-item d-flex align-items-center px-3" href="#">
+                         <div class="flex-shrink-0 me-2">
+                             <div class="avatar-xs rounded-circle flex-shrink-0">
+                                 <div class="avatar-title border rounded-circle text-uppercase dropdown-sort-name">C</div>
+                             </div>
+                         </div>
+                         <div class="flex-grow-1">
+                             <h6 class="mb-0 dropdown-name">CRM</h6>
+                             <p class="text-muted font-size-13 mb-0 dropdown-sub-desc">Designer Team</p>
+                         </div>
+                     </a>
+                 </div> -->
+             </div>
+             <!-- Left Menu Start -->
+             <ul class="metismenu list-unstyled" id="side-menu">
+                 <li class="menu-title">Menu</li>
+                 <li>
+                     <a href="https://wincoconnect.com/member/dashboard" class="waves-effect">
+                         <i class="fa fa-gauge-high"></i>
+                         <span>My Dashboard</span>
+                     </a>
+                 </li>
+
+                 <li>
+                     <a href="https://wincoconnect.com/member/mychapter" class="waves-effect">
+                         <i class="fa fa-building-columns"></i>
+                         <span>My Chapter</span>
+                     </a>
+                 </li>
+
+                 <li>
+                     <a href="https://wincoconnect.com/member/chapter" class="waves-effect">
+                         <i class="fa fa-sitemap"></i>
+                         <span>All Chapters</span>
+                     </a>
+                 </li>
+
+                 <li>
+                     <a href="https://wincoconnect.com/member/connect" class="waves-effect">
+                         <i class="fa fa-handshake-angle"></i>
+                         <span>Referral</span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="https://wincoconnect.com/member/topperformer" class="waves-effect">
+                         <i class="fa fa-handshake-angle"></i>
+                         <span>Top Performers</span>
+                     </a>
+                 </li>
+                 <li class="menu-title">Pages</li>
+                                  <li>
+                     <a href="https://wincoconnect.com/member/notifications" class="waves-effect d-flex align-items-center justify-content-between">
+
+                         <span>
+                             <i class="fa fa-bell"></i>
+                             <span>Notifications</span>
+                         </span>
+
+                         
+                     </a>
+                 </li>
+                 <li>
+                     <a href="https://wincoconnect.com/member/broadcast" class="waves-effect">
+                         <i class="fa fa-bullhorn"></i>
+                         <span>Broadcast</span>
+                     </a>
+                 </li>
+                 <li class="menu-title">Profile</li>
+
+                 <li>
+                     <a href="https://wincoconnect.com/member/profile" class="waves-effect">
+                         <i class="fa fa-id-badge"></i>
+                         <span>My Profile</span>
+                     </a>
+                 </li>
+
+                 <li>
+                     <a href="https://wincoconnect.com/member/mitb" class="waves-effect">
+                         <i class="fa fa-money-bill-trend-up"></i>
+                         <span>Business Done</span>
+                     </a>
+                 </li>
+
+                 <li>
+                     <a href="https://wincoconnect.com/member/f2f" class="waves-effect">
+                         <i class="fa fa-user-group"></i>
+                         <span>121' s</span>
+                     </a>
+                 </li>
+
+                 <li>
+                     <a href="https://wincoconnect.com/member/visitor" class="waves-effect">
+                         <i class="fa fa-user-check"></i>
+                         <span>Visitor Tracking</span>
+                     </a>
+                 </li>
+
+                 <!-- <li>
+                     <a href="https://wincoconnect.com/member/invitations" class="waves-effect">
+                         <i class="fa fa-envelope"></i>
+                         <span>Invitations</span>
+                     </a>
+                 </li> -->
+
+                 <li>
+                     <a href="https://wincoconnect.com/member/meetings" class="waves-effect">
+                         <i class="fa fa-calendar-days"></i>
+                         <span>Meetings</span>
+                     </a>
+                 </li>
+
+                 <li>
+                     <a href="https://wincoconnect.com/member/my_attendance" class="waves-effect">
+                         <i class="fa fa-clipboard-check"></i>
+                         <span>My Attendance</span>
+                     </a>
+                 </li>
+
+                 <li>
+                     <a href="https://wincoconnect.com/logout" class="waves-effect">
+                         <i class="fa fa-right-from-bracket"></i>
+                         <span>Logout</span>
+                     </a>
+                 </li>
+             </ul>
+         </div>
+     </div>
+
+     <div class="dropdown px-3 sidebar-user sidebar-user-info">
+         <button type="button" class="btn w-100 px-0 border-0" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             <span class="d-flex align-items-center">
+                 <div class="flex-shrink-0">
+                     <img src="https://wincoconnect.com/uploads/profile/1776448893_87ba65669f2cb1799190.jpeg"
+                         class="img-fluid header-profile-user rounded-circle"
+                         alt="Profile Image"
+                         style="object-fit: cover; object-position: top center;">
+                 </div>
+
+                 <div class="flex-grow-1 ms-2 text-start">
+                     <span class="ms-1 fw-medium user-name-text">Harri Kumar</span>
+                 </div>
+
+                 <div class="flex-shrink-0 text-end">
+                     <i class="mdi mdi-dots-vertical font-size-16"></i>
+                 </div>
+             </span>
+         </button>
+         <div class="dropdown-menu dropdown-menu-end">
+             <!-- item-->
+             <a class="dropdown-item" href="https://wincoconnect.com/member/profile"><i class="mdi mdi-account-circle text-muted font-size-16 align-middle me-1"></i> <span class="align-middle">Profile</span></a>
+             <!-- <a class="dropdown-item" href="#"><i class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-1"></i> <span class="align-middle">Help</span></a> -->
+             <div class="dropdown-divider"></div>
+             <!-- <a class="dropdown-item" href="#"><span class="badge bg-primary mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a> -->
+             <a class="dropdown-item" href="https://wincoconnect.com/logout"><i class="mdi mdi-lock text-muted font-size-16 align-middle me-1"></i> <span class="align-middle">Logout</span></a>
+         </div>
+     </div>
+
+ </div>
+ <!-- Left Sidebar End -->        <div class="main-content">
+            <div class="page-content">
+                                    <div class="profile-banner">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap">
+                            <!-- LEFT SIDE -->
+                            <div class="d-flex align-items-center">
+                                <!-- PROFILE IMAGE -->
+                                <div class="profile-img-wrapper">
+                                    <img src="https://wincoconnect.com/uploads/profile/1776448893_87ba65669f2cb1799190.jpeg"
+                                        class="profile-img"
+                                        style="object-fit: cover; object-position: top center;">
+
+                                    <!-- <span class="camera-icon">
+                                        <i class="fas fa-camera"></i>
+                                    </span> -->
+                                </div>
+                                <!-- USER INFO -->
+                                <div class="ms-4 text-white">
+                                    <h2 class="fw-bold text-warning mb-1">
+                                        Harri Kumar                                    </h2>
+
+                                    <div class="mb-2">
+                                        <i class="fas fa-briefcase"></i>
+                                        Website Development and Digital Marketing are essential for business growth in the digital era. A professionally developed website showcases your brand, products, and services, while digital marketing techniques such as SEO, social media marketing, Google Ads, and content marketing help drive traffic, generate leads, and increase sales.                                    </div>
+                                    <!-- BADGES -->
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span class="badge-pill">
+                                            Member                                        </span>
+                                        <!-- <span class="badge-pill">
+                                            member                                        </span> -->
+                                        <span class="badge-pill-dark">
+                                            Since Apr 2026                                        </span>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- SAVE BUTTON -->
+                            <a href="https://wincoconnect.com/member/profile/details/USR00001" class="btn save-btn">
+                                <i class="fas fa-save me-2"></i>Profile
+                            </a>
+                        </div>
+                    </div>
+                                        <div class="row text-center stats-box m-1">
+
+                        <!-- CONNECTS GIVEN -->
+                        <div class="col-md-4 col-4 border-end">
+                            <h6>Referral Given</h6>
+                            <h2 class="text-danger">0</h2>
+                        </div>
+
+                        <!-- CONNECTS RECEIVED -->
+                        <div class="col-md-4 col-4 border-end">
+                            <h6>Referral Received</h6>
+                            <h2 class="text-success">0</h2>
+                        </div>
+
+                        <!-- EVENTS ATTENDED -->
+                        <div class="col-md-4 col-4">
+                            <h6>Meetings Attended</h6>
+                            <h2 class="text-primary">31</h2>
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-3">
+                        <!-- Sidebar Tabs -->
+                        <div class="col-lg-3">
+                            <div class="card border-0 shadow-sm rounded-4 mb-4 position-sticky" style="top: 20px;">
+                                <div class="card-body p-2">
+                                    <div class="nav flex-column nav-pills" id="profile-tabs" role="tablist">
+                                        <button class="nav-link active py-3 text-start fw-bold" id="personal-tab" data-bs-toggle="pill"
+                                            data-bs-target="#personal" type="button" role="tab"><i class="fas fa-user-circle fa-fw me-3"></i>
+                                            Personal Information</button>
+                                        <button class="nav-link py-3 text-start fw-bold" id="professional-tab" data-bs-toggle="pill"
+                                            data-bs-target="#professional" type="button" role="tab"><i
+                                                class="fas fa-graduation-cap fa-fw me-3"></i> Professional Info</button>
+                                        <button class="nav-link py-3 text-start fw-bold" id="business-tab" data-bs-toggle="pill"
+                                            data-bs-target="#business" type="button" role="tab"><i class="fas fa-building fa-fw me-3"></i>
+                                            Business Details</button>
+                                        <button class="nav-link py-3 text-start fw-bold" id="location-tab" data-bs-toggle="pill"
+                                            data-bs-target="#location" type="button" role="tab"><i
+                                                class="fas fa-map-marked-alt fa-fw me-3"></i> Location & Hours</button>
+                                        <button class="nav-link py-3 text-start fw-bold" id="social-tab" data-bs-toggle="pill"
+                                            data-bs-target="#social" type="button" role="tab"><i class="fas fa-globe fa-fw me-3"></i> Social
+                                            Presence</button>
+                                        <button class="nav-link py-3 text-start fw-bold" id="additional-tab" data-bs-toggle="pill"
+                                            data-bs-target="#additional" type="button" role="tab"><i
+                                                class="fas fa-info-circle fa-fw me-3"></i> Additional Info</button>
+                                        <button class="nav-link py-3 text-start fw-bold" id="media-tab" data-bs-toggle="pill"
+                                            data-bs-target="#media" type="button" role="tab"><i class="fas fa-images fa-fw me-3"></i> Media &
+                                            Docs</button>
+                                        <button class="nav-link py-3 text-start fw-bold text-danger border-danger" id="password-tab"
+                                            data-bs-toggle="pill" data-bs-target="#password" type="button" role="tab"><i
+                                                class="fas fa-key fa-fw me-3"></i> Change Password</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content -->
+                        <div class="col-lg-9">
+                            <div class="tab-content" id="profile-tabs-content">
+                                <!-- 1. Personal Information -->
+                                <div class="tab-pane fade show active" id="personal" role="tabpanel">
+                                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                        <div class="card-header bg-white border-bottom border-danger border-opacity-25 py-0 px-4">
+                                            <h5 class="mb-0 fw-bold text-danger d-flex align-items-center" style="height: 60px;">
+                                                <i class="fas fa-user-circle fa-fw me-2"></i> <span>Personal Information</span>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body p-4">
+                                            <form id="updateMemberForm" method="post">
+                                                <!-- IMPORTANT ID -->
+                                                <input type="hidden" name="user_code" value="USR00001">
+                                                <div class="row">
+                                                    <div class="col-md-12 mb-2">
+                                                        <label class="form-label fw-bold">Full Name *</label>
+                                                        <input type="text" class="form-control" name="name"
+                                                            value="Harri Kumar" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Gender</label>
+                                                        <select class="form-select" name="gender">
+                                                            <option value="">Select Gender</option>
+                                                            <option value="Male" selected>Male</option>
+                                                            <option value="Female" >Female</option>
+                                                            <option value="Other" >Other</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Date of Birth</label>
+                                                        <input type="date" class="form-control" name="dob"
+                                                            value="1987-09-10">
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Email *</label>
+                                                        <input type="email" class="form-control" name="email"
+                                                            value="harri@jobhunterr.com" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Phone</label>
+                                                        <input type="text" class="form-control" name="phone"
+                                                            value="9341873532">
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Alternate Phone</label>
+                                                        <input type="text" class="form-control" name="alt_phone"
+                                                            value="9341873532">
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">WhatsApp</label>
+                                                        <input type="text" class="form-control" name="whatsapp"
+                                                            value="9341873532">
+                                                    </div>
+                                                    <div class="col-md-12 mb-2">
+                                                        <label class="form-label fw-bold">Address</label>
+                                                        <textarea class="form-control" name="address">Basaveshwar Nagar</textarea>
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <label class="form-label fw-bold">City</label>
+                                                        <input type="text" class="form-control" name="city"
+                                                            value="Bangalore">
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <label class="form-label fw-bold">State</label>
+                                                        <input type="text" class="form-control" name="state"
+                                                            value="Karnataka">
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <label class="form-label fw-bold">Pincode</label>
+                                                        <input type="text" class="form-control" name="pincode"
+                                                            value="560097">
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <button type="submit"
+                                                        class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm">
+                                                        <i class="fas fa-shield-alt me-2"></i> Update
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Professional Information -->
+                                <div class="tab-pane fade" id="professional" role="tabpanel">
+                                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                        <div class="card-header bg-white border-bottom border-danger border-opacity-25 py-0 px-4">
+                                            <h5 class="mb-0 fw-bold text-danger d-flex align-items-center" style="height: 60px;">
+                                                <i class="fas fa-graduation-cap fa-fw me-2"></i> <span>Professional & Skills</span>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body p-4">
+                                            <form id="updateProfessionalSkillsForm" method="post">
+                                                <div class="row">
+                                                    <div class="col-md-8 mb-2">
+                                                        <input type="hidden" name="user_code" value="USR00001">
+                                                        <label class="form-label fw-bold">Designation</label>
+                                                        <input type="text" class="form-control" name="designation"
+                                                            value="Website development and digital marketing" placeholder="e.g. Managing Director">
+                                                    </div>
+                                                    <div class="col-md-4 mb-2">
+                                                        <label class="form-label fw-bold">Years of Exp.</label>
+                                                        <input type="number" class="form-control" name="exp_years"
+                                                            value="">
+                                                    </div>
+                                                    <div class="col-md-12 mb-2">
+                                                        <label class="form-label fw-bold">Skills / Expertise</label>
+                                                        <input type="text" class="form-control" name="skills"
+                                                            value=""
+                                                            placeholder="e.g. Strategic Planning, Team Leadership">
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Services Offered</label>
+                                                        <textarea class="form-control" name="services"
+                                                            rows="2"></textarea>
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Products Offered</label>
+                                                        <textarea class="form-control" name="products"
+                                                            rows="2"></textarea>
+                                                    </div>
+                                                    <div class="col-md-12 mb-2">
+                                                        <label class="form-label fw-bold">Bio / About Me</label>
+                                                        <textarea class="form-control" name="bio"
+                                                            rows="4">Website Development and Digital Marketing are essential for business growth in the digital era. A professionally developed website showcases your brand, products, and services, while digital marketing techniques such as SEO, social media marketing, Google Ads, and content marketing help drive traffic, generate leads, and increase sales.</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <button type="submit"
+                                                        class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm">
+                                                        <i class="fas fa-shield-alt me-2"></i> Update
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Business Details -->
+                                <div class="tab-pane fade" id="business" role="tabpanel">
+                                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                        <div class="card-header bg-white border-bottom border-danger border-opacity-25 py-0 px-4">
+                                            <h5 class="mb-0 fw-bold text-danger d-flex align-items-center" style="height: 60px;">
+                                                <i class="fas fa-building fa-fw me-2"></i> <span>Business Information</span>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body p-4">
+                                            <form id="UpdateBusinessInformationForm" method="post">
+                                                <div class="row">
+                                                    <div class="col-md-12 mb-2">
+                                                        <input type="hidden" name="user_code" value="USR00001">
+                                                        <label class="form-label fw-bold">Business Name</label>
+                                                        <input type="text" class="form-control" name="business_name"
+                                                            value="Hosting Baba">
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Industry / Category</label>
+                                                        <input type="text" class="form-control" name="industry"
+                                                            value="Growth Marketing Partner">
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Subcategory</label>
+                                                        <input type="text" class="form-control" name="subcategory"
+                                                            value="Digital Marketing">
+                                                    </div>
+                                                    <div class="col-md-12 mb-2">
+                                                        <label class="form-label fw-bold">Business Description</label>
+                                                        <textarea class="form-control" name="description"
+                                                            rows="3">Hosting Baba is one of the leading digital marketing company in Bangalore, which blends creativity with feasibility. Hosting Baba Digital marketing services are SEO, SEM, SMM, Complete Digital Marketing, Website Design and Development, Domain Registration, Web Hosting, E-Commerce Solutions, Content Management System, and other IT-related projects, Graphic design, Logo designs.Hosting Baba does not believe in getting lost in the crowd. So, we differentiate ourselves by delivering what we promise to the clients. Although we offer unbelievable attractive packages for Digital Marketing Services, quality is something we never ever compromise on. So, if you are looking to occupy the digital space before others, our doors are wide open to you!</textarea>
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Registration Number</label>
+                                                        <input type="text" class="form-control" name="reg_number"
+                                                            value="9341873532">
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">GST Number</label>
+                                                        <input type="text" class="form-control" name="gst_number"
+                                                            value="">
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">Year Started</label>
+                                                        <input type="number" class="form-control" name="start_year"
+                                                            value="2015">
+                                                    </div>
+                                                    <div class="col-md-6 mb-2">
+                                                        <label class="form-label fw-bold">No. of Employees</label>
+                                                        <input type="number" class="form-control" name="employees"
+                                                            value="20">
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <button type="submit"
+                                                        class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm">
+                                                        <i class="fas fa-shield-alt me-2"></i> Update
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 4. Location & Hours -->
+                                <div class="tab-pane fade" id="location" role="tabpanel">
+                                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                        <div class="card-header bg-white border-bottom border-danger border-opacity-25 py-0 px-4">
+                                            <h5 class="mb-0 fw-bold text-danger d-flex align-items-center" style="height: 60px;">
+                                                <i class="fas fa-map-marked-alt fa-fw me-2"></i> <span>Business Location</span>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body p-4">
+                                            <form id="UpdateBusinessLocationForm" method="post">
+                                                <input type="hidden" name="user_code" value="USR00001">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Office Address</label>
+                                                    <textarea class="form-control" name="office_address"
+                                                        rows="3">Hosting Baba
+3rd Floor, 51, 2nd C Cross Road, above Nammura Upachara Hotel, 3rd Stage 4th Block, WOC, Basaveshwar Nagar, Bengaluru, Karnataka 560079
+</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Working Hours</label>
+                                                    <input type="text" class="form-control" name="working_hours"
+                                                        value=""
+                                                        placeholder="e.g. Mon-Fri 9:00 AM - 6:00 PM">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Service Areas (Locations Covered)</label>
+                                                    <textarea class="form-control" name="service_areas" rows="2"
+                                                        placeholder="e.g. Bangalore, Mumbai, International">https://share.google/Tl5td2bys7hFB8Q9d</textarea>
+                                                </div>
+                                                <div class="text-end">
+                                                    <button type="submit"
+                                                        class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm">
+                                                        <i class="fas fa-shield-alt me-2"></i> Update
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <!-- 6. Social Presence -->
+                                <div class="tab-pane fade" id="social" role="tabpanel">
+                                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                        <div class="card-header bg-white border-bottom border-danger border-opacity-25 py-0 px-4">
+                                            <h5 class="mb-0 fw-bold text-danger d-flex align-items-center" style="height: 60px;">
+                                                <i class="fas fa-globe fa-fw me-2"></i> <span>Social Media & Links</span>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body p-4">
+                                            <form id="updateSocialMedia" method="post">
+                                                <input type="hidden" name="user_code" value="USR00001">
+                                                <div class="row">
+                                                    <div class="col-md-12 mb-3">
+                                                        <label class="form-label fw-bold">Website URL</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i class="fas fa-link"></i></span>
+                                                            <input type="text" class="form-control" name="website"
+                                                                value="https://webhostingbaba.com">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label fw-bold">LinkedIn</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text text-primary"><i
+                                                                    class="fab fa-linkedin"></i></span>
+                                                            <input type="text" class="form-control" name="linkedin"
+                                                                value="https://www.linkedin.com/in/hosting-baba-91763b207/">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label fw-bold">Facebook</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text text-primary"><i
+                                                                    class="fab fa-facebook"></i></span>
+                                                            <input type="text" class="form-control" name="facebook"
+                                                                value="https://www.facebook.com/Hostingbaba">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label fw-bold">Instagram</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text text-danger"><i
+                                                                    class="fab fa-instagram"></i></span>
+                                                            <input type="text" class="form-control" name="instagram"
+                                                                value="https://www.instagram.com/hostingbaba/?hl=en">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label fw-bold">Twitter / X</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text text-dark"><i class="fab fa-twitter"></i></span>
+                                                            <input type="text" class="form-control" name="twitter"
+                                                                value="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label fw-bold">YouTube Channel</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text text-danger"><i class="fab fa-youtube"></i></span>
+                                                            <input type="text" class="form-control" name="youtube"
+                                                                value="https://www.youtube.com/shorts/ngJMNWIY0Rs">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label fw-bold">Google Business Page</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text text-warning"><i class="fab fa-google"></i></span>
+                                                            <input type="text" class="form-control" name="google_business"
+                                                                value="https://share.google/Tl5td2bys7hFB8Q9d">
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <button type="submit"
+                                                            class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm">
+                                                            <i class="fas fa-shield-alt me-2"></i> Update
+                                                        </button>
+                                                    </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 7. Additional Info -->
+                            <div class="tab-pane fade" id="additional" role="tabpanel">
+                                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                    <div class="card-header bg-white border-bottom border-danger border-opacity-25 py-0 px-4">
+                                        <h5 class="mb-0 fw-bold text-danger d-flex align-items-center" style="height: 60px;">
+                                            <i class="fas fa-info-circle fa-fw me-2"></i> <span>Extras & Awards</span>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <form id="updateAwardsData" method="post">
+                                            <input type="hidden" name="user_code" value="USR00001">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Awards & Achievements</label>
+                                                <textarea class="form-control" name="awards"
+                                                    rows="2"></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Certifications</label>
+                                                <textarea class="form-control" name="certifications"
+                                                    rows="2"></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Profile Tags / Keywords</label>
+                                                <input type="text" class="form-control" name="tags"
+                                                    value=""
+                                                    placeholder="e.g. Web Design, SEO, Digital Marketing">
+                                            </div>
+                                            <div class="text-end">
+                                                <button type="submit"
+                                                    class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm">
+                                                    <i class="fas fa-shield-alt me-2"></i> Update
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 8. Media & Docs -->
+                            <div class="tab-pane fade" id="media" role="tabpanel">
+                                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                    <div class="card-header bg-white border-bottom border-danger border-opacity-25 py-0 px-4">
+                                        <h5 class="mb-0 fw-bold text-danger d-flex align-items-center" style="height: 60px;">
+                                            <i class="fas fa-images fa-fw me-2"></i> <span>Media & Document Management</span>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <form id="updateMediaDocumentData" method="post" enctype="multipart/form-data">
+
+                                            <input type="hidden" name="user_code" value="USR00001">
+
+                                            <div class="row g-4">
+
+                                                <!-- PROFILE PHOTO -->
+                                                <div class="col-md-6">
+                                                    <label class="fw-bold">Profile Photo</label>
+
+                                                    <input type="file" class="form-control mb-2"
+                                                        name="profile_photo"
+                                                        accept=".jpg,.jpeg,.png">
+
+                                                                                                            <img src="https://wincoconnect.com/uploads/profile/1776448893_87ba65669f2cb1799190.jpeg"
+                                                            class="img-thumbnail"
+                                                            style="height:90px">
+                                                                                                    </div>
+
+
+                                                <!-- BUSINESS LOGO -->
+                                                <div class="col-md-6">
+                                                    <label class="fw-bold">Business Logo</label>
+
+                                                    <input type="file" class="form-control mb-2"
+                                                        name="business_logo"
+                                                        accept="image/*"
+                                                        onchange="previewImg(this,'logoPrev')">
+
+                                                    <img id="logoPrev"
+                                                        src="https://wincoconnect.com/uploads/business_logo/1780133245_79af4e0d13458afd7e91.jpeg"
+                                                        class="img-thumbnail"
+                                                        style="height:90px;">
+                                                </div>
+
+
+                                                <!-- BUSINESS CARD -->
+                                                <div class="col-md-6">
+                                                    <label class="fw-bold">Business Card</label>
+
+                                                    <input type="file" class="form-control mb-2"
+                                                        name="business_card"
+                                                        accept=".pdf,.doc,.docx,.jpg,.png">
+
+                                                                                                            <a href="https://wincoconnect.com/uploads/business_cards/1780133245_2459d7c2bdcf4d0cd026.pdf"
+                                                            target="_blank"
+                                                            class="btn btn-sm btn-outline-danger">
+                                                            Download Card
+                                                        </a>
+                                                                                                    </div>
+
+
+                                                <!-- BROCHURE -->
+                                                <div class="col-md-6">
+                                                    <label class="fw-bold">Company Brochure</label>
+
+                                                    <input type="file" class="form-control mb-2"
+                                                        name="brochure"
+                                                        accept=".pdf,.doc,.docx,.jpg,.png">
+
+                                                                                                            <a href="https://wincoconnect.com/uploads/brochures/1780133245_67fbde746571278a21f3.pdf"
+                                                            target="_blank"
+                                                            class="btn btn-sm btn-outline-primary">
+                                                            Download Brochure
+                                                        </a>
+                                                                                                    </div>
+
+
+                                                <!-- PORTFOLIO -->
+                                                <div class="col-md-12">
+                                                    <label class="fw-bold">Portfolio</label>
+
+                                                    <input type="file" class="form-control mb-2"
+                                                        name="portfolio"
+                                                        accept=".pdf,.zip,.rar,.doc,.docx">
+
+                                                                                                            <a href="https://wincoconnect.com/uploads/portfolios/1780133245_b6fe3148dc2994729071.pdf"
+                                                            target="_blank"
+                                                            class="btn btn-sm btn-outline-info">
+                                                            Download Portfolio
+                                                        </a>
+
+                                                        <span class="text-muted small ms-2">
+                                                            1780133245_b6fe3148dc2994729071.pdf                                                        </span>
+                                                                                                    </div>
+
+                                            </div>
+
+                                            <div class="text-end mt-3">
+                                                <button type="submit"
+                                                    class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm">
+                                                    <i class="fas fa-shield-alt me-2"></i> Update
+                                                </button>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 9. Change Password -->
+                            <div class="tab-pane fade" id="password" role="tabpanel">
+                                <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+                                    <div class="card-header bg-white border-bottom border-danger border-opacity-25 py-0 px-4">
+                                        <h5 class="mb-0 fw-bold text-danger d-flex align-items-center" style="height:60px;">
+                                            <i class="fas fa-key me-2"></i> Security: Change Password
+                                        </h5>
+                                    </div>
+
+                                    <div class="card-body p-4">
+
+                                        <form id="updateChangePasswordtData" method="post">
+                                            <input type="hidden" name="user_code" value="USR00001">
+                                            <div class="row">
+                                                <!-- OLD PASSWORD -->
+                                                <!-- <div class="col-md-12 mb-3">
+                                                    <label class="fw-bold">Old Password</label>
+                                                    <div class="input-group">
+                                                        <input type="password" name="current_password"
+                                                            id="current_password"
+                                                            class="form-control"
+                                                            required>
+                                                        <button class="btn btn-outline-secondary"
+                                                            type="button"
+                                                            onclick="togglePass('current_password',this)">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                </div> -->
+                                                <!-- NEW PASSWORD -->
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="fw-bold">New Password</label>
+                                                    <div class="input-group">
+                                                        <input type="password" name="new_password"
+                                                            id="new_password"
+                                                            class="form-control"
+                                                            minlength="6"
+                                                            required>
+                                                        <button class="btn btn-outline-secondary"
+                                                            type="button"
+                                                            onclick="togglePass('new_password',this)">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                    <small class="text-muted">Minimum 6 characters</small>
+                                                </div>
+                                                <!-- CONFIRM -->
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="fw-bold">Confirm Password</label>
+                                                    <div class="input-group">
+                                                        <input type="password" name="confirm_password"
+                                                            id="confirm_password"
+                                                            class="form-control"
+                                                            minlength="6"
+                                                            required>
+                                                        <button class="btn btn-outline-secondary"
+                                                            type="button"
+                                                            onclick="togglePass('confirm_password',this)">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mt-3 text-end">
+                                                    <button type="submit"
+                                                        class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm">
+                                                        <i class="fas fa-shield-alt me-2"></i> Update
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        
+        </div>
+        <!-- End Page-content -->
+                 <footer class="footer">
+             <div class="container-fluid">
+                 <div class="row">
+                     <div class="col-sm-12">
+                         <p class="underline" style="font-size:13px;">Copyright © 2026, All Rights Reserved. Designed & Developed with<a target="_blank" style="color:#d11c2f;" href="https://webhostingbaba.com/"> ❤️ Hosting Baba.</a></p>
+                     </div>
+
+                 </div>
+             </div>
+         </footer>
+
+             </div>
+    <!-- end main content-->
+    </div>
+    <div class="rightbar-overlay"></div>
+    <!-- JAVASCRIPT -->
+    <!-- edit start-->
+<div class="modal fade" id="model" style="padding:120px 0px;">
+    <div class="modal-dialog modal-dialog-centered" role="document" id="model_data" style="max-width:600px;float:center;">
+    </div>
+</div>
+<!-- edit end -->
+<script>
+    function team_app_status($apply_code) {
+        $('#model').modal('show');
+        $.ajax({
+            url: "https://wincoconnect.com/employee/team_applications/appication_status/" + $apply_code,
+            success: function(response) {
+                $("#model_data").html(response);
+            }
+        })
+    }
+</script>
+
+
+<style>
+    /* ===== MODERN SWEET ALERT UI ===== */
+
+    .swal2-popup {
+        border-radius: 16px !important;
+        padding: 28px 26px !important;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, .18) !important;
+        animation: popupFade .25s ease;
+    }
+
+    /* smooth popup animation */
+    @keyframes popupFade {
+        from {
+            transform: translateY(20px) scale(.96);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* title */
+    .swal2-title {
+        font-size: 20px !important;
+        font-weight: 600 !important;
+        color: #2b2b2b;
+    }
+
+    /* text */
+    .swal2-html-container {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    /* backdrop blur */
+    .swal2-container.swal2-backdrop-show {
+        backdrop-filter: blur(5px);
+        background: rgba(0, 0, 0, .35) !important;
+    }
+
+    /* loader size */
+    .swal2-loader {
+        border-width: 3px !important;
+    }
+
+    /* buttons */
+    .swal2-confirm {
+        border-radius: 8px !important;
+        padding: 8px 18px !important;
+        font-weight: 500;
+    }
+
+    /* success icon smoother */
+    .swal2-success-ring {
+        border-width: 3px !important;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on("submit", "#updateMemberForm", function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const btn = form.find("button[type='submit']");
+        $.ajax({
+            url: "https://wincoconnect.com/member/profile/update_profile_data_action",
+            type: "POST",
+            data: form.serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                btn.prop("disabled", true)
+                    .addClass("opacity-75")
+                    .html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Saving Changes...
+               `);
+                Swal.fire({
+                    title: "Updating Profile",
+                    html: `
+                    <div style="font-size:13px">
+                        Syncing your latest information securely...
+                    </div>
+                `,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function(res) {
+                Swal.close();
+                if (res.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Profile Updated Successfully",
+                        text: res.message,
+                        timer: 1700,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1600);
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Update Failed",
+                        text: res.message,
+                        confirmButtonColor: "#dc3545"
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.close();
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: "Unable to connect. Please try again.",
+                    confirmButtonColor: "#dc3545"
+                });
+                console.log(xhr.responseText);
+            },
+            complete: function() {
+                btn.prop("disabled", false)
+                    .removeClass("opacity-75")
+                    .html(`<i class="fas fa-save me-1"></i> Update Profile`);
+            }
+        });
+    });
+</script>
+
+
+<script>
+    $(document).on("submit", "#updateProfessionalSkillsForm", function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const btn = form.find("button[type='submit']");
+        $.ajax({
+            url: "https://wincoconnect.com/member/profile/updateProfessionalSkillsForm",
+            type: "POST",
+            data: form.serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                btn.prop("disabled", true)
+                    .addClass("opacity-75")
+                    .html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Saving Changes...
+               `);
+                Swal.fire({
+                    title: "Updating Profile",
+                    html: `
+                    <div style="font-size:13px">
+                        Syncing your latest information securely...
+                    </div>
+                `,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function(res) {
+                Swal.close();
+                if (res.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Profile Updated Successfully",
+                        text: res.message,
+                        timer: 1700,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1600);
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Update Failed",
+                        text: res.message,
+                        confirmButtonColor: "#dc3545"
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.close();
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: "Unable to connect. Please try again.",
+                    confirmButtonColor: "#dc3545"
+                });
+                console.log(xhr.responseText);
+            },
+            complete: function() {
+                btn.prop("disabled", false)
+                    .removeClass("opacity-75")
+                    .html(`<i class="fas fa-save me-1"></i> Update Profile`);
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    $(document).on("submit", "#UpdateBusinessInformationForm", function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const btn = form.find("button[type='submit']");
+        $.ajax({
+            url: "https://wincoconnect.com/member/profile/UpdateBusinessInformationForm",
+            type: "POST",
+            data: form.serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                btn.prop("disabled", true)
+                    .addClass("opacity-75")
+                    .html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Saving Changes...
+               `);
+                Swal.fire({
+                    title: "Updating Profile",
+                    html: `
+                    <div style="font-size:13px">
+                        Syncing your latest information securely...
+                    </div>
+                `,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function(res) {
+                Swal.close();
+                if (res.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Profile Updated Successfully",
+                        text: res.message,
+                        timer: 1700,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1600);
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Update Failed",
+                        text: res.message,
+                        confirmButtonColor: "#dc3545"
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.close();
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: "Unable to connect. Please try again.",
+                    confirmButtonColor: "#dc3545"
+                });
+                console.log(xhr.responseText);
+            },
+            complete: function() {
+                btn.prop("disabled", false)
+                    .removeClass("opacity-75")
+                    .html(`<i class="fas fa-save me-1"></i> Update Profile`);
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    $(document).on("submit", "#UpdateBusinessLocationForm", function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const btn = form.find("button[type='submit']");
+        $.ajax({
+            url: "https://wincoconnect.com/member/profile/UpdateBusinessLocationForm",
+            type: "POST",
+            data: form.serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                btn.prop("disabled", true)
+                    .addClass("opacity-75")
+                    .html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Saving Changes...
+               `);
+                Swal.fire({
+                    title: "Updating Profile",
+                    html: `
+                    <div style="font-size:13px">
+                        Syncing your latest information securely...
+                    </div>
+                `,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function(res) {
+                Swal.close();
+                if (res.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Profile Updated Successfully",
+                        text: res.message,
+                        timer: 1700,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1600);
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Update Failed",
+                        text: res.message,
+                        confirmButtonColor: "#dc3545"
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.close();
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: "Unable to connect. Please try again.",
+                    confirmButtonColor: "#dc3545"
+                });
+                console.log(xhr.responseText);
+            },
+            complete: function() {
+                btn.prop("disabled", false)
+                    .removeClass("opacity-75")
+                    .html(`<i class="fas fa-save me-1"></i> Update Profile`);
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).on("submit", "#updateSocialMedia", function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const btn = form.find("button[type='submit']");
+        $.ajax({
+            url: "https://wincoconnect.com/member/profile/updateSocialMedia",
+            type: "POST",
+            data: form.serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                btn.prop("disabled", true)
+                    .addClass("opacity-75")
+                    .html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Saving Changes...
+               `);
+                Swal.fire({
+                    title: "Updating Profile",
+                    html: `
+                    <div style="font-size:13px">
+                        Syncing your latest information securely...
+                    </div>
+                `,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function(res) {
+                Swal.close();
+                if (res.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Profile Updated Successfully",
+                        text: res.message,
+                        timer: 1700,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1600);
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Update Failed",
+                        text: res.message,
+                        confirmButtonColor: "#dc3545"
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.close();
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: "Unable to connect. Please try again.",
+                    confirmButtonColor: "#dc3545"
+                });
+                console.log(xhr.responseText);
+            },
+            complete: function() {
+                btn.prop("disabled", false)
+                    .removeClass("opacity-75")
+                    .html(`<i class="fas fa-save me-1"></i> Update Profile`);
+            }
+        });
+    });
+</script>
+
+
+<script>
+    $(document).on("submit", "#updateAwardsData", function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const btn = form.find("button[type='submit']");
+        $.ajax({
+            url: "https://wincoconnect.com/member/profile/updateAwardsData",
+            type: "POST",
+            data: form.serialize(),
+            dataType: "json",
+            beforeSend: function() {
+                btn.prop("disabled", true)
+                    .addClass("opacity-75")
+                    .html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Saving Changes...
+               `);
+                Swal.fire({
+                    title: "Updating Profile",
+                    html: `
+                    <div style="font-size:13px">
+                        Syncing your latest information securely...
+                    </div>
+                `,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function(res) {
+                Swal.close();
+                if (res.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Profile Updated Successfully",
+                        text: res.message,
+                        timer: 1700,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1600);
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Update Failed",
+                        text: res.message,
+                        confirmButtonColor: "#dc3545"
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.close();
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: "Unable to connect. Please try again.",
+                    confirmButtonColor: "#dc3545"
+                });
+                console.log(xhr.responseText);
+            },
+            complete: function() {
+                btn.prop("disabled", false)
+                    .removeClass("opacity-75")
+                    .html(`<i class="fas fa-save me-1"></i> Update Profile`);
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).on("submit", "#updateMediaDocumentData", function(e) {
+        e.preventDefault();
+
+        const form = this;
+        const btn = $(form).find("button[type='submit']");
+
+        // ✅ Use FormData for file upload
+        const formData = new FormData(form);
+
+        $.ajax({
+            url: "https://wincoconnect.com/member/profile/updateMediaDocumentData",
+            type: "POST",
+            data: formData,
+            processData: false, // ✅ REQUIRED
+            contentType: false, // ✅ REQUIRED
+            dataType: "json",
+
+            beforeSend: function() {
+                btn.prop("disabled", true)
+                    .addClass("opacity-75")
+                    .html(`
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Saving Changes...
+                `);
+
+                Swal.fire({
+                    title: "Updating Profile",
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+
+            success: function(res) {
+                Swal.close();
+
+                if (res.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Profile Updated Successfully",
+                        text: res.message,
+                        timer: 1700,
+                        showConfirmButton: false
+                    });
+
+                    setTimeout(() => location.reload(), 1600);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Update Failed",
+                        text: res.message
+                    });
+                }
+            },
+
+            error: function(xhr) {
+                Swal.close();
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: "Unable to connect."
+                });
+
+                console.log(xhr.responseText);
+            },
+
+            complete: function() {
+                btn.prop("disabled", false)
+                    .removeClass("opacity-75")
+                    .html(`<i class="fas fa-save me-1"></i> Update Profile`);
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).on("submit", "#updateChangePasswordtData", function(e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let btn = form.find("button[type='submit']");
+
+        $.ajax({
+            url: "https://wincoconnect.com/member/profile/updateChangePasswordtData",
+            type: "POST",
+            data: form.serialize(),
+            dataType: "json",
+
+            beforeSend: function() {
+                btn.prop("disabled", true);
+
+                Swal.fire({
+                    title: "Updating Password...",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+
+            success: function(res) {
+
+                // ✅ safely replace loading popup
+                if (res.status === "success") {
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    form[0].reset();
+
+                } else {
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: res.message
+                    });
+                }
+            },
+
+            error: function(xhr) {
+
+                console.log(xhr.responseText);
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: "Something went wrong"
+                });
+            },
+
+            complete: function() {
+                btn.prop("disabled", false);
+            }
+        });
+    });
+</script>    <script src="https://wincoconnect.com/assets2/libs/jquery/jquery.min.js"></script>
+    <script src="https://wincoconnect.com/assets2/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://wincoconnect.com/assets2/libs/metismenu/metisMenu.min.js"></script>
+    <script src="https://wincoconnect.com/assets2/libs/simplebar/simplebar.min.js"></script>
+    <script src="https://wincoconnect.com/assets2/libs/node-waves/waves.min.js"></script>
+    <script src="https://wincoconnect.com/assets2/libs/apexcharts/apexcharts.min.js"></script>
+    <script src="https://wincoconnect.com/assets2/libs/jsvectormap/jsvectormap.min.js"></script>
+    <script src="https://wincoconnect.com/assets2/libs/jsvectormap/maps/world-merc.js"></script>
+    <script src="https://wincoconnect.com/assets2/js/pages/dashboard.init.js"></script>
+    <script src="https://wincoconnect.com/assets2/js/app.js"></script>
+    <script>
+        function previewImg(input, id) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $('#' + id).attr('src', e.target.result).show();
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+    <script>
+        function togglePass(id, btn) {
+            let input = document.getElementById(id);
+            let icon = btn.querySelector("i");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+    </script>
+</body>
+
+</html>

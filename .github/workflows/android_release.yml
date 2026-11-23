@@ -1,0 +1,74 @@
+name: Android Play Store & Release CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'lib/**'
+      - 'android/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/android_release.yml'
+  workflow_dispatch:
+
+jobs:
+  build-android-release:
+    name: Build Android Release APK & AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Static Code Analysis
+        run: flutter analyze
+
+      - name: Run Automated Test Suite
+        run: flutter test
+
+      - name: Configure Production Signing Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEY_PROPERTIES: ${{ secrets.ANDROID_KEY_PROPERTIES }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$KEY_PROPERTIES" ]; then
+            echo "Keystore credentials detected in Secrets."
+            echo "$KEYSTORE_BASE64" | base64 --decode > android/app/winco_release.jks
+            echo "$KEY_PROPERTIES" > android/key.properties
+          fi
+
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      - name: Build Release App Bundle (.aab for Play Store)
+        run: flutter build appbundle --release
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: winco-connect-release-apk
+          path: build/app/outputs/flutter-apk/*.apk
+          retention-days: 30
+
+      - name: Upload Play Store AAB Bundle Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: winco-connect-playstore-aab
+          path: build/app/outputs/bundle/release/*.aab
+          retention-days: 30
