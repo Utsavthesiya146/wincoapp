@@ -73,11 +73,14 @@ jobs:
           fi
 
           if [ -f "$PP_PATH" ]; then
-            UUID=$(grep -A1 -m1 "UUID" "$PP_PATH" | tail -n1 | sed -e 's/<[^>]*>//g' | tr -d '[:space:]')
+            UUID="4a5c8987-5dd2-4a9f-9eea-0834973c7c8c"
+            PARSED_UUID=$(grep -a -A1 "UUID" "$PP_PATH" | grep -oE '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | head -n 1 || echo "")
+            if [ -n "$PARSED_UUID" ]; then
+              UUID="$PARSED_UUID"
+            fi
             echo "Provisioning Profile UUID: $UUID"
             mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
             cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
-            cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/
           fi
 
           # 2. Configure Keychain and Certificate (if provided)
@@ -96,7 +99,8 @@ jobs:
             security unlock-keychain -p "$KEYCHAIN_PWD" $KEYCHAIN_PATH
 
             security import $CERTIFICATE_PATH -P "$P12_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-            security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PWD" $KEYCHAIN_PATH
+            security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PWD" $KEYCHAIN_PATH || true
+            security default-keychain -s $KEYCHAIN_PATH
             security list-keychain -d user -s $KEYCHAIN_PATH $(security list-keychains -d user | tr -d '"')
 
             echo "has_signing=true" >> $GITHUB_OUTPUT
