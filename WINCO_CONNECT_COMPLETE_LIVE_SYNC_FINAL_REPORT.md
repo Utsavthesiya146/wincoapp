@@ -211,7 +211,7 @@ Cryptographic validation of the production signing keys was executed via PowerSh
   ```
 - **Verification Result:** **`jar verified` (`True`)**.
 - Confirms the backup keystore is fully functional, uncorrupted, and capable of signing valid Android release artifacts without relying on the primary keystore.
-
+  
 ### C. Keystore vs Release APK Certificate Fingerprint Match:
 - **Keystore Certificate SHA-256 (`keytool -list -v`):**  
   `B5:5F:CF:D6:E8:FF:84:A5:B2:E6:15:02:ED:0A:4E:8E:B9:91:93:AD:35:7F:F9:A0:0B:8A:79:F0:BE:9A:A9:5F`

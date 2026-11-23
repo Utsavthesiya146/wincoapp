@@ -62,36 +62,46 @@ jobs:
           BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
-          if [ -n "$BUILD_CERTIFICATE_BASE64" ] && [ -n "$BUILD_PROVISION_PROFILE_BASE64" ]; then
-            echo "Apple Distribution Certificate and Provisioning Profile detected in Secrets."
+          # 1. Install Provisioning Profile (from repo or secrets)
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          if [ -n "$BUILD_PROVISION_PROFILE_BASE64" ]; then
+            echo "Decoding provisioning profile from GitHub Secrets..."
+            echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+          elif [ -f "ios/Winco_Connect.mobileprovision" ]; then
+            echo "Using committed ios/Winco_Connect.mobileprovision..."
+            cp ios/Winco_Connect.mobileprovision $PP_PATH
+          fi
+
+          if [ -f "$PP_PATH" ]; then
+            UUID=$(grep -A1 -m1 "UUID" "$PP_PATH" | tail -n1 | sed -e 's/<[^>]*>//g' | tr -d '[:space:]')
+            echo "Provisioning Profile UUID: $UUID"
+            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+            cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
+            cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/
+          fi
+
+          # 2. Configure Keychain and Certificate (if provided)
+          if [ -n "$BUILD_CERTIFICATE_BASE64" ]; then
+            echo "Apple Distribution Certificate detected in Secrets."
             
-            # Create variables
             CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-            PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
             KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
             KEYCHAIN_PWD=${KEYCHAIN_PASSWORD:-"temporary_keychain_password_123"}
+            P12_PWD=${P12_PASSWORD:-""}
 
-            # Decode base64 secrets to files
             echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-            echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
 
-            # Create and configure temporary keychain
             security create-keychain -p "$KEYCHAIN_PWD" $KEYCHAIN_PATH
             security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
             security unlock-keychain -p "$KEYCHAIN_PWD" $KEYCHAIN_PATH
 
-            # Import certificate to keychain
-            security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+            security import $CERTIFICATE_PATH -P "$P12_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
             security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PWD" $KEYCHAIN_PATH
             security list-keychain -d user -s $KEYCHAIN_PATH $(security list-keychains -d user | tr -d '"')
 
-            # Install provisioning profile
-            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-            cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/
-
             echo "has_signing=true" >> $GITHUB_OUTPUT
           else
-            echo "No Apple distribution certificate provided in GitHub Secrets. Building unsigned release archive."
+            echo "No Apple distribution certificate provided in GitHub Secrets. Building archive with embedded provisioning profile."
             echo "has_signing=false" >> $GITHUB_OUTPUT
           fi
 
@@ -110,6 +120,10 @@ jobs:
             cd build/ios/iphoneos
             mkdir -p Payload
             cp -r Runner.app Payload/
+            if [ -f "ios/Winco_Connect.mobileprovision" ]; then
+              echo "Embedding ios/Winco_Connect.mobileprovision..."
+              cp ios/Winco_Connect.mobileprovision Payload/Runner.app/embedded.mobileprovision
+            fi
             zip -r ../ipa/WincoConnect.ipa Payload
             cd ../../..
           fi
