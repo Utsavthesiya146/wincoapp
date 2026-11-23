@@ -114,23 +114,39 @@ jobs:
       # ----------------------------------------------------
       - name: Build iOS App Store Package (IPA)
         run: |
-          if [ "${{ steps.setup_signing.outputs.has_signing }}" = "true" ]; then
-            echo "Building signed release IPA for App Store..."
-            flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
-          else
-            echo "Building release iOS bundle (codesign on upload or manual profile)..."
-            flutter build ios --release --no-codesign
-            mkdir -p build/ios/ipa
-            cd build/ios/iphoneos
-            mkdir -p Payload
-            cp -r Runner.app Payload/
-            if [ -f "ios/Winco_Connect.mobileprovision" ]; then
-              echo "Embedding ios/Winco_Connect.mobileprovision..."
-              cp ios/Winco_Connect.mobileprovision Payload/Runner.app/embedded.mobileprovision
-            fi
-            zip -r ../ipa/WincoConnect.ipa Payload
-            cd ../../..
-          fi
+          echo "Building iOS Release bundle with Flutter..."
+          flutter build ios --release --no-codesign
+
+          echo "Archiving iOS Release with xcodebuild..."
+          xcodebuild -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -archivePath $RUNNER_TEMP/Runner.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NO
+
+          echo "Exporting signed App Store IPA with xcodebuild..."
+          mkdir -p build/ios/ipa
+          xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/Runner.xcarchive \
+            -exportPath build/ios/ipa \
+            -exportOptionsPlist ios/ExportOptions.plist \
+            -allowProvisioningUpdates || {
+              echo "Export failed with exportOptionsPlist, creating release IPA package..."
+              cd build/ios/iphoneos
+              mkdir -p Payload
+              cp -r Runner.app Payload/
+              if [ -f "$RUNNER_TEMP/build_pp.mobileprovision" ]; then
+                cp "$RUNNER_TEMP/build_pp.mobileprovision" Payload/Runner.app/embedded.mobileprovision
+              elif [ -f "../../../ios/Winco_Connect.mobileprovision" ]; then
+                cp "../../../ios/Winco_Connect.mobileprovision" Payload/Runner.app/embedded.mobileprovision
+              fi
+              zip -r ../ipa/WincoConnect.ipa Payload
+              cd ../../..
+            }
+
+          echo "Listing generated IPA files:"
+          ls -la build/ios/ipa/
 
       # ----------------------------------------------------
       # Upload Artifact to GitHub (Downloadable IPA)
