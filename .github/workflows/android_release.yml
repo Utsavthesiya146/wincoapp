@@ -51,6 +51,15 @@ jobs:
             echo "Keystore credentials detected in Secrets."
             echo "$KEYSTORE_BASE64" | base64 --decode > android/app/winco_release.jks
             echo "$KEY_PROPERTIES" > android/key.properties
+          else
+            echo "Generating automated release signing key for CI build..."
+            keytool -genkey -v -keystore android/app/winco_release.jks -alias winco_key -keyalg RSA -keysize 2048 -validity 10000 -storepass winco123 -keypass winco123 -dname "CN=Winco, OU=Dev, O=Winco, L=Bengaluru, S=KA, C=IN"
+            cat <<EOF > android/key.properties
+storePassword=winco123
+keyPassword=winco123
+keyAlias=winco_key
+storeFile=winco_release.jks
+EOF
           fi
 
       - name: Build Release APK
@@ -72,3 +81,4 @@ jobs:
           name: winco-connect-playstore-aab
           path: build/app/outputs/bundle/release/*.aab
           retention-days: 30
+

@@ -20,7 +20,7 @@ on:
 jobs:
   build-and-deploy-ios:
     name: Build & Deploy iOS to TestFlight
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 60
 
     steps:
@@ -157,3 +157,4 @@ jobs:
             echo "App Store Connect API Secrets not configured yet. IPA has been archived as a GitHub release artifact."
             echo "Please set APP_STORE_CONNECT_KEY_ID, APP_STORE_CONNECT_ISSUER_ID, and APP_STORE_CONNECT_PRIVATE_KEY in GitHub Secrets to enable automatic TestFlight upload."
           fi
+
